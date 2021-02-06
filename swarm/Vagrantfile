@@ -1,0 +1,72 @@
+Vagrant.configure("2") do |config|
+    config.vm.box = "ubuntu/bionic64"
+    config.vm.provider "virtualbox" do |vb|
+      vb.memory = 512
+      vb.cpus = 1
+    end
+
+    config.vm.define "ansible" do |m|
+        m.vm.provider "virtualbox" do |v|
+            v.name = "ansible"
+        end
+        m.vm.network "public_network", bridge: "Intel(R) Dual Band Wireless-AC 8265", ip: "192.168.0.10"
+        m.vm.provision "shell", 
+            inline: "cat /vagrant/files/cert/public.pub >> .ssh/authorized_keys && \
+                     apt-get update && apt-get install -y ansible && \
+                     sudo ln -s /usr/bin/python3 /usr/bin/python"
+        # m.vm.provision "shell",
+        #     inline: "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
+        #             sudo add-apt-repository \
+        #             'deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+        #             $(lsb_release -cs) \
+        #             stable'"
+        # m.vm.provision "shell",
+        #     inline: "apt-get update && apt-get install -y docker-ce docker-ce-cli containerd.io"
+    end
+
+
+
+    config.vm.define "swarm-1" do |m|
+        m.vm.provider "virtualbox" do |v|
+            v.name = "swarm-1"
+        end
+        m.vm.network "public_network", bridge: "Intel(R) Dual Band Wireless-AC 8265", ip: "192.168.0.11"
+        m.vm.provision "shell", 
+        inline: "cat /vagrant/files/cert/public.pub >> .ssh/authorized_keys && \
+                 apt-get update && \
+                 sudo ln -s /usr/bin/python3 /usr/bin/python"
+    end
+    config.vm.define "swarm-2" do |m|
+        m.vm.provider "virtualbox" do |v|
+            v.name = "swarm-2"
+        end
+        m.vm.network "public_network", bridge: "Intel(R) Dual Band Wireless-AC 8265", ip: "192.168.0.12"
+        m.vm.provision "shell", 
+        inline: "cat /vagrant/files/cert/public.pub >> .ssh/authorized_keys && \
+                 apt-get update && \
+                 sudo ln -s /usr/bin/python3 /usr/bin/python && \
+                 mkdir /tmp/gpg/"
+    end
+    config.vm.define "swarm-3" do |m|
+        m.vm.provider "virtualbox" do |v|
+            v.name = "swarm-3"
+        end
+        m.vm.network "public_network", bridge: "Intel(R) Dual Band Wireless-AC 8265", ip: "192.168.0.13"
+        m.vm.provision "shell", 
+        inline: "cat /vagrant/files/cert/public.pub >> .ssh/authorized_keys && \
+                 apt-get update && \
+                 sudo ln -s /usr/bin/python3 /usr/bin/python && \
+                 echo swarm-3 > /etc/hostname"
+    end
+    config.vm.define "swarm-4" do |m|
+        m.vm.provider "virtualbox" do |v|
+            v.name = "swarm-4"
+        end
+        m.vm.network "public_network", bridge: "Intel(R) Dual Band Wireless-AC 8265", ip: "192.168.0.14"
+        m.vm.provision "shell", 
+        inline: "cat /vagrant/files/cert/public.pub >> .ssh/authorized_keys && \
+                 apt-get update && \
+                 sudo ln -s /usr/bin/python3 /usr/bin/python && \
+                 echo swarm-4 > /etc/hostname"
+    end
+end

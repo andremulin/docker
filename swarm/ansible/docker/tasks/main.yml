@@ -1,0 +1,35 @@
+---
+  - name: 'Install dependencies'
+    apt:
+      name: "{{ item }}"
+      state: latest
+    become: yes
+    with_items:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg-agent
+      - software-properties-common
+  
+  - name: 'Download GPG and Install GPG'
+    apt_key: 
+      url: https://download.docker.com/linux/ubuntu/gpg
+      state: present
+    become: yes
+
+  - name: 'Add repository'
+    apt_repository:
+      repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable
+      update_cache: yes
+      state: present
+    become: yes
+
+  - name: 'Install Docker'
+    apt:
+      name: "{{ item }}"
+      state: latest
+    become: yes
+    with_items:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io

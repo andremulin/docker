@@ -1,0 +1,5 @@
+---
+  - name: apt-key
+    command: sudo apt-key add -
+    args:
+      chdir: /tmp/gpg
